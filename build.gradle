@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+}
+
+group 'com.zh'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation("com.squareup.moshi:moshi:1.8.0")
+}
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+
+jar.enabled(false)
+shadowJar {
+    archivesBaseName = "addressbook"
+    classifier(null)
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+}
+assemble.dependsOn(shadowJar)
