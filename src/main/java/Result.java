@@ -23,7 +23,7 @@ public class Result {
         this.name = name;
         this.phone = phone;
         this.address = address;
-        //System.out.println(address);
+        System.out.println(address);
     }
 
     public void setName(String name) {

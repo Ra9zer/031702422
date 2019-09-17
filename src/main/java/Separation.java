@@ -34,28 +34,28 @@ public class Separation{
             string = str[0] + str[1];
         }
     }
-    private void sepProvince(){
-        String str=string.substring(0,2);
-        for(Province province:DataBase.getProvinces()){
-            if(province.getName().contains(str)){
-                if(province.getName().equals("北京")||
-                        province.getName().equals("天津")||
-                        province.getName().equals("上海")||
-                        province.getName().equals("重庆")){
-                    string=province.getName()+string;
-                }
-                this.province=province;
-                int len=province.getName().length();
-                for(int i=0;i<len;i++)
-                {
-                    if(string.charAt(i)!=province.getName().charAt(i))
-                    {
-                        len=i;
-                        break;
+    private void sepProvince() {
+        if (DataBase.getProvinces() != null) {
+            String str = string.substring(0, 2);
+            for (Province province : DataBase.getProvinces()) {
+                if (province.getName().contains(str)) {
+                    if (province.getName().equals("北京") ||
+                            province.getName().equals("天津") ||
+                            province.getName().equals("上海") ||
+                            province.getName().equals("重庆")) {
+                        string = province.getName() + string;
                     }
+                    this.province = province;
+                    int len = province.getName().length();
+                    for (int i = 0; i < len; i++) {
+                        if (string.charAt(i) != province.getName().charAt(i)) {
+                            len = i;
+                            break;
+                        }
+                    }
+                    string = string.substring(len);
+                    break;
                 }
-                string=string.substring(len);
-                break;
             }
         }
     }
@@ -104,12 +104,12 @@ public class Separation{
     private void sepStreet(){
         if(this.area!=null){
             String str=string.substring(0,2);
-            //System.out.println(area.getName());
+
             //System.out.println(area.getStreets());
             for(Street street:this.area.getStreets()){
                 if(street.getName().contains(str)){
                     this.street=street;
-                    int len=street.getName().length();
+                    int len=Math.min(street.getName().length(),string.length());
                     for(int i=0;i<len;i++)
                     {
                         if(string.charAt(i)!=street.getName().charAt(i))
@@ -119,25 +119,63 @@ public class Separation{
                         }
                     }
                     string=string.substring(len);
+                    //System.out.println(string);
                 }
-            }
+            }//System.out.println(street.getName());
         }
         else{
             this.street=new Street();
         }
     }
     private void sepDetails() {
-        String splitter = "(\\D+)(\\d+号)(.*)";
+        //System.out.println("asdasdasdasd");
+        String road = "";
+        String number = "";
+        String splitter = "(.*[镇区道路街巷里])";
         Pattern pattern = Pattern.compile(splitter);
         Matcher matcher = pattern.matcher(string);
+        //System.out.println(string);
+        //System.out.println(matcher.find());
         if (matcher.find()) {
-            String road = matcher.group(1);
-            String number = matcher.group(2);
-            String last = matcher.group(3);
-            addressList.add(road);
-            addressList.add(number);
-            addressList.add(last);
+            road = matcher.group();
+            int len=road.length();
+            for(int i=0;i<len;i++)
+            {
+                if(string.charAt(i)!=road.charAt(i))
+                {
+                    len=i;
+                    break;
+                }
+            }
+            string=string.substring(len);
         }
+        splitter = "(\\d+号楼.*)";
+        pattern = Pattern.compile(splitter);
+        matcher = pattern.matcher(string);
+        if (matcher.find()) {
+            string = matcher.group();
+        } else {
+            splitter = "(\\d+号)";
+            pattern = Pattern.compile(splitter);
+            matcher = pattern.matcher(string);
+            if (matcher.find()) {
+                number = matcher.group();
+                int len=number.length();
+                for(int i=0;i<len;i++)
+                {
+                    if(string.charAt(i)!=number.charAt(i))
+                    {
+                        len=i;
+                        break;
+                    }
+                }
+                string=string.substring(len);
+            }
+        }
+        //System.out.println(road);
+        addressList.add(road);
+        addressList.add(number);
+        addressList.add(string);
     }
     public Separation separation(){
         sepLeveAndName();
@@ -149,18 +187,14 @@ public class Separation{
         addressList.add(this.province.getName());
         addressList.add(this.city.getName());
         addressList.add(this.area.getName());
-        switch (leve) {
-            case "1":
-                addressList.add(string);
-                break;
-            case "2":
-                sepDetails();
-                break;
-            case "3":
-                sepDetails();
-                break;
-            default:
-                break;
+        if(this.street!=null)
+        addressList.add(this.street.getName());
+        //System.out.println("+"+leve+"+");
+        //System.out.println(string);
+        if(leve.equals("1")) {
+            addressList.add(string);
+        } else {
+            sepDetails();
         }
         return this;
     }
