@@ -125,12 +125,14 @@ public class Separation{
     }
     private void sepStreet(){
         String str=string.substring(0,2);
+        boolean flag=false;
         //System.out.println(str);
         if(this.area.getName()!=""){
             //System.out.println(area.getStreets());
             for(Street street:this.area.getStreets()){
                 if(street.getName().contains(str)){
-                   // System.out.println("1");
+                    flag=true;
+                   //System.out.println("1");
                     this.street=street;
                     int len=Math.min(street.getName().length(),string.length());
                     for(int i=0;i<len;i++)
@@ -142,11 +144,11 @@ public class Separation{
                         }
                     }
                     string=string.substring(len);
+                    break;
                     //System.out.println(string);
                 }
-                //else{
-                 //   this.street=new Street();
-               // }
+                }if(flag==false){
+                    this.street=new Street();
             }//System.out.println(street.getName());
         }
         else{
@@ -198,13 +200,14 @@ public class Separation{
         splitter = "(\\d+号楼.*)";
         pattern = Pattern.compile(splitter);
         matcher = pattern.matcher(string);
-        if (matcher.find()) {
+        if (matcher.find()) {//System.out.println("1");
             string = matcher.group();
         } else {
             splitter = "(\\d+号)";
             pattern = Pattern.compile(splitter);
             matcher = pattern.matcher(string);
             if (matcher.find()) {
+
                 number = matcher.group();
                 int len=number.length();
                 for(int i=0;i<len;i++)
@@ -218,7 +221,7 @@ public class Separation{
                 string=string.substring(len);
             }
         }
-        //System.out.println(road);
+        //System.out.println(number);
         addressList.add(road);
         addressList.add(number);
         addressList.add(string);
