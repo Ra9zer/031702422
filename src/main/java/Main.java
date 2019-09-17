@@ -15,15 +15,12 @@ public class Main {
         List<String> input = FileUtil.FiletoString(inputPath);
         List<Result> results = new ArrayList<>();
         input.forEach(s -> results.add(new Separation(s).separation().toResult()));
-        String output = resultToJson(results);
+        Moshi moshi = new Moshi.Builder().build();
+        Type type = Types.newParameterizedType(List.class, Result.class);
+        JsonAdapter<List<Result>> jsonadapter = moshi.adapter(type);
+        String output = jsonadapter.toJson(results);
         String outputPath = args[1];
         FileUtil.StringtoFile(output,outputPath);
     }
 
-    private static String resultToJson(List<Result> results) {
-        Moshi moshi = new Moshi.Builder().build();
-        Type type = Types.newParameterizedType(List.class, Result.class);
-        JsonAdapter<List<Result>> adapter = moshi.adapter(type);
-        return adapter.toJson(results);
-    }
 }

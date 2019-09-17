@@ -1,5 +1,5 @@
 public class Street {
-    String name;
+    String name="";
     public String getName() {
         return name;
     }

@@ -1,11 +1,12 @@
 import com.squareup.moshi.Json;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Province {
-    String name;
+    String name="";
     @Json(name = "children")
-    List<City> cities;
+    List<City> cities=new ArrayList<>();
 
     public String getName() {
         return name;

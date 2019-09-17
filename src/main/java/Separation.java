@@ -9,9 +9,9 @@ public class Separation{
     private String name;
     private String phonenum;
     private String leve;
-    private Province province;
-    private City city;
-    private Area area;
+    private Province province=new Province();
+    private City city=new City();
+    private Area area=new Area();
     private Street street;
     private List<String> addressList=new ArrayList<>();
 
@@ -97,11 +97,15 @@ public class Separation{
                 }
             }
         }
-
+        else{
+            this.area=new Area();
+        }
     }
     private void sepStreet(){
         if(this.area!=null){
             String str=string.substring(0,2);
+            //System.out.println(area.getName());
+            //System.out.println(area.getStreets());
             for(Street street:this.area.getStreets()){
                 if(street.getName().contains(str)){
                     this.street=street;
@@ -118,7 +122,9 @@ public class Separation{
                 }
             }
         }
-
+        else{
+            this.street=new Street();
+        }
     }
     private void sepDetails() {
         String splitter = "(\\D+)(\\d+号)(.*)";
@@ -140,6 +146,9 @@ public class Separation{
         sepCity();
         sepArea();
         sepStreet();
+        addressList.add(this.province.getName());
+        addressList.add(this.city.getName());
+        addressList.add(this.area.getName());
         switch (leve) {
             case "1":
                 addressList.add(string);
