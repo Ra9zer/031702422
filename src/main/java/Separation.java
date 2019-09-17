@@ -8,7 +8,7 @@ public class Separation{
     private String string;
     private String name;
     private String phonenum;
-    private String leve;
+    private String leve="";
     private Province province=new Province();
     private City city=new City();
     private Area area=new Area();
@@ -75,6 +75,9 @@ public class Separation{
                 }
                 string=string.substring(len);
             }
+            //else{
+            //    this.city=new City();
+            //}
         }
     }
     private void sepArea(){
@@ -94,6 +97,9 @@ public class Separation{
                     }
                     string=string.substring(len);
                 }
+                //else{
+                 //   this.area=new Area();
+               // }
             }
         }
         else{
@@ -124,6 +130,7 @@ public class Separation{
             //System.out.println(area.getStreets());
             for(Street street:this.area.getStreets()){
                 if(street.getName().contains(str)){
+                   // System.out.println("1");
                     this.street=street;
                     int len=Math.min(street.getName().length(),string.length());
                     for(int i=0;i<len;i++)
@@ -137,6 +144,9 @@ public class Separation{
                     string=string.substring(len);
                     //System.out.println(string);
                 }
+                //else{
+                 //   this.street=new Street();
+               // }
             }//System.out.println(street.getName());
         }
         else{
@@ -227,10 +237,14 @@ public class Separation{
         addressList.add(this.street.getName());
         //System.out.println("+"+leve+"+");
         //System.out.println(string);
-        if(leve.equals("1")) {
-            addressList.add(string);
-        } else {
+        //System.out.println("leve = " + leve);
+
+        if(leve.equals("2")||leve.equals("3")) {
             sepDetails();
+        } else {
+            //System.out.println(leve);
+            //System.out.println("1");
+            addressList.add(string);
         }
         return this;
     }
