@@ -31,7 +31,7 @@ public class Separation{
         if (matcher.find()) {
             phonenum = matcher.group(0);
             String[] str = string.split(phonenum);
-            string = str[0] + str[1];
+            string = string.replace(phonenum, "");
         }
     }
     private void sepProvince() {
@@ -61,7 +61,6 @@ public class Separation{
     }
     private void sepCity(){
         String str=string.substring(0,2);
-
         for(City city:this.province.getCities()){
             if(city.getName().contains(str)){
                 this.city=city;
@@ -79,8 +78,8 @@ public class Separation{
         }
     }
     private void sepArea(){
-        if(this.city!=null){
-            String str=string.substring(0,2);
+        String str=string.substring(0,2);
+        if(this.city.getName()!=""){
             for(Area area:this.city.getAreas()){
                 if(area.getName().contains(str)){
                     this.area=area;
@@ -98,13 +97,30 @@ public class Separation{
             }
         }
         else{
-            this.area=new Area();
+            for(City city:this.province.getCities()){
+                for(Area area:city.getAreas()){
+                    if(area.getName().contains(str)){
+                        this.area=area;
+                        int len=area.getName().length();
+                        for(int i=0;i<len;i++)
+                        {
+                            if(string.charAt(i)!=area.getName().charAt(i))
+                            {
+                                len=i;
+                                break;
+                            }
+                        }
+                        string=string.substring(len);
+                    }
+                }
+            }
+
         }
     }
     private void sepStreet(){
-        if(this.area!=null){
-            String str=string.substring(0,2);
-
+        String str=string.substring(0,2);
+        //System.out.println(str);
+        if(this.area.getName()!=""){
             //System.out.println(area.getStreets());
             for(Street street:this.area.getStreets()){
                 if(street.getName().contains(str)){
@@ -124,8 +140,26 @@ public class Separation{
             }//System.out.println(street.getName());
         }
         else{
-            this.street=new Street();
-        }
+            //System.out.println("1");
+            for(Area area:this.city.getAreas()){
+                for(Street street:area.getStreets()){
+                    if(street.getName().contains(str)){
+                        this.street=street;
+                        int len=street.getName().length();
+                        for(int i=0;i<len;i++)
+                        {
+                            if(string.charAt(i)!=street.getName().charAt(i))
+                            {
+                                len=i;
+                                break;
+                            }
+                        }
+                        string=string.substring(len);
+                        //System.out.println(string);
+                    }
+                }//System.out.println(street.getName());
+            //this.street=new Street();
+        }}
     }
     private void sepDetails() {
         //System.out.println("asdasdasdasd");
@@ -138,6 +172,7 @@ public class Separation{
         //System.out.println(matcher.find());
         if (matcher.find()) {
             road = matcher.group();
+            //System.out.println(road);
             int len=road.length();
             for(int i=0;i<len;i++)
             {
@@ -149,6 +184,7 @@ public class Separation{
             }
             string=string.substring(len);
         }
+
         splitter = "(\\d+号楼.*)";
         pattern = Pattern.compile(splitter);
         matcher = pattern.matcher(string);
